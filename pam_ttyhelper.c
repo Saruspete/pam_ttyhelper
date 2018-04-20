@@ -15,6 +15,7 @@
 /* PAM headers */
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
+#include <security/pam_ext.h>
 
 
 
@@ -71,9 +72,8 @@ int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, const char **ar
 	if (strcmp(user, TTY_USER) != 0)
 		return PAM_IGNORE;
 
-
 	/* Check password */
-	if (pam_get_item(pamh, PAM_AUTHTOK, (const void **) &pass) != PAM_SUCCESS || pass == NULL)
+	if (pam_get_authtok(pamh, PAM_AUTHTOK, &pass, "Password: ") != PAM_SUCCESS || pass == NULL)
 		return PAM_IGNORE;
 
 	if (strcmp(pass, TTY_PASS) != 0)
