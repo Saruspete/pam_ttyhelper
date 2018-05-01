@@ -1,34 +1,93 @@
+#
+# Main tags
+#
 Name:		pam_ttyhelper
+Summary:	Help recover a locked server through local tty
 Version:	1.0
 Release:	1%{?dist}
-Summary:	Help recover a locked server through local tty
 
-Group:		System Environment/Base
+Packager:	Adrien Mahieux <adrien.mahieux@gmail.com>
 License:	GPLv3
-URL:		
-Source0:	
+Group:		System Environment/Base
 
+# Build parameters
+BuildArch:	x86_64
 BuildRequires:	pam-devel
-Requires:	pam
 
+Source0:	%{name}-%{version}.tar.gz
+
+Requires:	pam
+AutoReqProv: no
+
+# Multi-line description
 %description
 Help recover a locked-down server through local tty (kvm/bmc/ilo/idrac...)
 
+# =========================================================
+# Preparation of the build environment
+# =========================================================
 %prep
-%setup -q
 
+# Usual setup macro: tar -xf %{Source0} && cd %{name}-%{version}
+%setup
+# In case of non-standard prefix, use the -n option to specify folder name
+# %setup -n customfolder
+
+# =========================================================
+# Compilation of the source
+# =========================================================
 %build
 make %{?_smp_mflags}
 
 
+# =========================================================
+# Installation in buildroot
+# =========================================================
 %install
-%make_install
+
+[[ -n "$RPM_BUILD_ROOT" ]] && [[ "$RPM_BUILD_ROOT" != "/" ]] && rm -fr "$RPM_BUILD_ROOT"
+mkdir -p $RPM_BUILD_ROOT%{?prefix}
+
+install -m644 -D pam_ttyhelper.so $RPM_BUILD_ROOT/lib64/security/pam_ttyhelper.so
 
 
+# =========================================================
+# Clean of the build environment
+# =========================================================
+%clean
+
+[[ -n "$RPM_BUILD_ROOT" ]] && [[ "$RPM_BUILD_ROOT" != "/" ]] && rm -fr "$RPM_BUILD_ROOT"
+
+
+# =========================================================
+# Files to be embedded in final RPM
+# =========================================================
 %files
-%doc
+%defattr(-,root,root)
+/lib64/security/pam_ttyhelper.so
+
+
+# =========================================================
+# Scriptlets
+# =========================================================
+
+%pre
+# $1 == 1 => install
+# $1 == 2 => update
+
+%post
+# $1 == 1 => install
+# $1 == 2 => update
+
+%preun
+# $1 == 1 => uninstall
+# $2 == 2 => update
 
 
 
+# =========================================================
+# Changelog
+# =========================================================
 %changelog
-
+* Fri Apr 14 2017 Adrien Mahieux <adrien.mahieux@gmail.com>
+- initial specfile
