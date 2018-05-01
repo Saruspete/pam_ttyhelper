@@ -19,6 +19,8 @@ Source0:	%{name}-%{version}.tar.gz
 Requires:	pam
 AutoReqProv: no
 
+%define debug_package %{nil}
+
 # Multi-line description
 %description
 Help recover a locked-down server through local tty (kvm/bmc/ilo/idrac...)
@@ -30,8 +32,11 @@ Help recover a locked-down server through local tty (kvm/bmc/ilo/idrac...)
 
 # Usual setup macro: tar -xf %{Source0} && cd %{name}-%{version}
 %setup
-# In case of non-standard prefix, use the -n option to specify folder name
-# %setup -n customfolder
+
+# Edit the password if provided in the command line
+%if %{?password}0
+	sed -Ee 's/^(#define TTY_PASS )".+"/\1 "%{password}"/' -i pam_ttyhelper.c
+%endif
 
 # =========================================================
 # Compilation of the source
@@ -65,24 +70,6 @@ install -m644 -D pam_ttyhelper.so $RPM_BUILD_ROOT/lib64/security/pam_ttyhelper.s
 %files
 %defattr(-,root,root)
 /lib64/security/pam_ttyhelper.so
-
-
-# =========================================================
-# Scriptlets
-# =========================================================
-
-%pre
-# $1 == 1 => install
-# $1 == 2 => update
-
-%post
-# $1 == 1 => install
-# $1 == 2 => update
-
-%preun
-# $1 == 1 => uninstall
-# $2 == 2 => update
-
 
 
 # =========================================================
