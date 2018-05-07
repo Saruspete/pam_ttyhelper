@@ -1,1 +1,2 @@
 pam_ttyhelper.so
+*.tar.gz

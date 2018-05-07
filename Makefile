@@ -1,5 +1,5 @@
 PREFIX = /
-VERSION = 1.0
+VERSION = 1.1
 ARCHIVE = pam_ttyhelper-$(VERSION)
 
 .PHONY: install check-password

@@ -3,7 +3,7 @@
 #
 Name:		pam_ttyhelper
 Summary:	Help recover a locked server through local tty
-Version:	1.0
+Version:	1.1
 Release:	1%{?dist}
 
 Packager:	Adrien Mahieux <adrien.mahieux@gmail.com>
