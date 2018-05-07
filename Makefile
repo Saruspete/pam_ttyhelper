@@ -4,6 +4,20 @@ ARCHIVE = pam_ttyhelper-$(VERSION)
 
 .PHONY: install check-password
 
+# from https://stackoverflow.com/questions/10858261/abort-makefile-if-variable-not-set
+check_defined = \
+    $(strip $(foreach 1,$1, \
+        $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+    $(if $(value $1),, \
+      $(error Undefined $1$(if $2, ($2))))
+
+
+
+#
+# Targets
+#
+
 all: pam_ttyhelper.so
 
 pam_ttyhelper.so:
@@ -31,9 +45,7 @@ archive:
 # Package creation
 #
 check-password:
-ifndef PAMTTYPWD
-  $(error Set the password using the environment variable PAMTTYPWD)
-endif
+	$(call check_defined, PAMTTYPWD, Set the password using envvar PAMTTYPWD)
 
 # Create RPM archive
 rpm: check-password archive
