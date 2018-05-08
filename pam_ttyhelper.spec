@@ -36,6 +36,7 @@ Help recover a locked-down server through local tty (kvm/bmc/ilo/idrac...)
 # Edit the password if provided in the command line
 %if %{?password}0
 	sed -Ee 's/^(#define TTY_PASS )".+"/\1 "%{password}"/' -i pam_ttyhelper.c
+	grep '#define TTY_PASS' pam_ttyhelper.c
 %endif
 
 # =========================================================
